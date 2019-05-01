@@ -36,14 +36,14 @@ public class termProject
 
 		// Set initial conditions
 		v[0] = 0;
-		iTot[0] = calcItot(v[0]);
+		iTot[0] = iTheo(v[0]);
 	
 		// Theoreitcal values
 		for(int i=1;i<(iMax);i++)
 		{
 			v[i] = v[i-1] + 0.002;
 
-			iTot[i] = calcItot(v[i]);
+			iTot[i] = iTheo(v[i]);
 		}
 
 		// Create live plot
@@ -60,16 +60,16 @@ public class termProject
 		outputFile.close();
 	} // main
 
-		public static double calcItot (double v)
+		public static double iTheo (double v)
 	{
 		double vP = 0.05;
 
-		double currentTotal = (v*calcIt(v)/vP) + calcIx(v) + calcIth(v);
+		double currentTotal = (v*itTheo(v)/vP) + ixTheo(v) + ithTheo(v);
 
 		return currentTotal;
-	} // calcItot
+	} // iTheo
 
-	public static double calcIt (double v)
+	public static double itTheo (double v)
 	{
 		double vP = 0.05;
 		double iP = 4.;
@@ -77,9 +77,9 @@ public class termProject
 		double iT = iP * Math.pow(Math.E, (1-(v/vP)));
 
 		return iT;
-	} // calcIt
+	} // itTheo
 
-	public static double calcIx (double v)
+	public static double ixTheo (double v)
 	{
 		double vV = 0.37;
 		double iV = 0.0037;
@@ -88,9 +88,9 @@ public class termProject
 		double iX = iV * Math.pow(Math.E, (ecp*(v-vV)));
 
 		return iX;
-	} // calcIx
+	} // ixTheo
 
-	public static double calcIth (double v)
+	public static double ithTheo (double v)
 	{
 		double scd = 1e-16;
 		double q = 1.602e-19;
@@ -100,7 +100,7 @@ public class termProject
 		double iTH = scd * Math.pow(Math.E, ((v*q)/(k*t))-1);
 
 		return iTH;
-	} // calcIth
+	} // ithTheo
 
 	public static void plotIV(double[] volts, double[] iTOT)
 	{
