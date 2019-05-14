@@ -24,7 +24,7 @@ public class IVTheoretical
 	public static double k = 1.38e-23;	//Boltzmann's constant
 	public static double t = 150;		//Tempeprature
 
-	public static void main(String[] args)
+	public void main()
 	{
 		boolean checkPlotIV = true;
 
@@ -75,7 +75,7 @@ public class IVTheoretical
 		outputFile.close();
 	} // main
 
-		public static double curretnTD (double v)
+	public static double curretnTD (double v)
 	{
 		double currentTotal = v * iP * Math.pow(Math.E, (1-v/vP))/vP + iV * Math.pow(Math.E, (ecp*(v-vV))) + scd*Math.pow(Math.E, (v*q/k/t)-1);
 
