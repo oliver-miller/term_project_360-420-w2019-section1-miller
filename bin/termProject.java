@@ -21,7 +21,8 @@ public class termProject
 	public static void main(String[] args)
 	{
 
-		int maxIndex = iMax * 5;
+		// Max index for all 3 loops
+		int maxIndex = iMax * 3;
 		// Arrays
 		double[] t = new double[maxIndex];
 		double[] i1 = new double[maxIndex];
@@ -35,10 +36,13 @@ public class termProject
 		i1[0] = 0;
 		i2[0] = 0;
 
+		// Outermost  loop is for looping the overall circuit 3 times
 		for(int j=0;j<3;j++)
 		{
+			// Second outermost loop is for each of the 3 loops 
 			for(int i=(j*iMax)+1;i<((j+1)*iMax);i++)
 			{
+				// Initialize values for each iteration
 				boolean check = false;
 				double tempi2 = 0;
 				double tempi1 = 0;
@@ -47,35 +51,44 @@ public class termProject
 
 				while(!(check))
 				{
+					// Re-initialize temp values
 					tempi2 = 0;
 					tempvTD = 0;
 
+					// Assign values for this iteration
 					vTD[i] = 0.10;
 					i1[i] = current1(vTD[i], i1[i-1]);
 					i2[i] = current2(vTD[i], i2[i-1], i1[i], i1[i-1]);
 					itot[i] = i1[i] + i2[i];
 
+					// Loop through tunnel diode i(v) function to find corresponding voltage for a given i2
 					while(!(check))
 					{
 						tempvTD += 0.001;
 						tempi2 = currentTD(tempvTD);
 
+						// Test for convergence of current through tunnel diode by comparing estimated and calculated i2
 						if(Math.abs(tempi2-i2[i]) < 0.1)
 						{
 							check = true;
 						}
 					}
+					// Re-assign boolean for outer while loop
 					check = false;
 
+					// Calculate temporary values for current given the estimated voltage
 					double checki1 = current1(tempvTD, i1[i-1]);
 					double checki2 = current2(tempvTD, i2[i-1], checki1, i1[i-1]);
 					double checkitot = checki1 + checki2;
 
+					// Test for convergence of voltage across tunnel diode by comparing estimated and calculated itot
+					// This value should be constant based on Kirchoff's current law
 					if(Math.abs(checkitot - itot[i]) < 0.000001)
 					{
 						vTD[i] = tempvTD;
 						check = true;
 					}
+				System.out.println(i);
 				}
 			}
 		}
@@ -84,19 +97,19 @@ public class termProject
 		plot(vTD, t);
 	}
 
-	public static double current1 (double v, double previouscurrent)
+	public static double current1 (double v, double previouscurrent) // Derived with Kirchoff's voltage law
 	{
 		double current = previouscurrent + (r1*v*dt)/(r1*r2 + r1*l + r2*l);
 		return current;
 	}//current1
 
-	public static double current2 (double v, double previouscurrent, double currentone, double previouscurrentone)
+	public static double current2 (double v, double previouscurrent, double currentone, double previouscurrentone) // Derived with Kirchoff's voltage law
 	{
 		double current = previouscurrent + (r2*(currentone-previouscurrentone)/l) - v*dt;
 		return current;
 	}//current2
 
-	public static double currentTD (double v)
+	public static double currentTD (double v)	// Already known (derived from SPICE model)
 	{
 		//Tunnel current constants
 		double vP = 0.05;		//Peak voltage
