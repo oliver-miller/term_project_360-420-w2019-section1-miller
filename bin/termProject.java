@@ -14,7 +14,7 @@ public class termProject
 	public static double r1 = 24;		// Ohms
 	public static double l = 0.7;		// Henry
 	public static double dt = 5e-6;		// Time step
-	public static double tTotal = 3.2;	// Total time
+	public static double tTotal = 5;	// Total time
 	// Max index
 	public static int iMax = (int)(tTotal/dt);
 
@@ -22,7 +22,8 @@ public class termProject
 	{
 
 		// Max index for all 3 loops
-		int maxIndex = iMax * 3;
+		int loops;
+		int maxIndex = iMax + 1;
 		// Arrays
 		double[] t = new double[maxIndex];
 		double[] i1 = new double[maxIndex];
@@ -36,27 +37,20 @@ public class termProject
 		i1[0] = 0;
 		i2[0] = 0;
 
-		// Outermost  loop is for looping the overall circuit 3 times
-		for(int j=0;j<3;j++)
-		{
-			// Second outermost loop is for each of the 3 loops 
-			for(int i=(j*iMax)+1;i<((j+1)*iMax);i++)
+			// Outermost loop is for 1 period of oscillation loop
+			for(int i=1;i<iMax;i++)
 			{
 				// Initialize values for each iteration
 				boolean check = false;
 				double tempi2 = 0;
 				double tempi1 = 0;
-				double tempvTD = 0;
+				double tempvTD = 0.1;
 				t[i] = t[i-1] + dt;
 
 				while(!(check))
 				{
-					// Re-initialize temp values
-					tempi2 = 0;
-					tempvTD = 0;
-
 					// Assign values for this iteration
-					vTD[i] = 0.10;
+					vTD[i] = tempvTD;
 					i1[i] = current1(vTD[i], i1[i-1]);
 					i2[i] = current2(vTD[i], i2[i-1], i1[i], i1[i-1]);
 					itot[i] = i1[i] + i2[i];
@@ -91,7 +85,9 @@ public class termProject
 				System.out.println(i);
 				}
 			}
-		}
+			// Reset loop
+			t[iMax] = t[iMax-1] + 0.01;
+			vTD[iMax] = 0;
 		
 		store(vTD, t);
 		plot(vTD, t);
