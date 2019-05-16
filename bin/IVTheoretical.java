@@ -24,9 +24,10 @@ public class IVTheoretical
 	public static double k = 1.38e-23;	//Boltzmann's constant
 	public static double t = 150;		//Tempeprature
 
-	public void main()
+	public static void main(String[] args)
 	{
-		boolean checkPlotIV = true;
+		boolean checkPlotIV = false;
+		System.out.println(currentTD(3.01));
 
 		// Open file and store data (I-V graphs for individual currents and total current)
 		PrintWriter outputFile = null;
@@ -51,14 +52,14 @@ public class IVTheoretical
 
 		// Set initial conditions
 		v[0] = 0;
-		iTD[0] = curretnTD(v[0]); // Current across tunnel diode
+		iTD[0] = currentTD(v[0]); // Current across tunnel diode
 	
 		// Theoreitcal values
 		for(int i=1;i<(iMax);i++)
 		{
 			v[i] = v[i-1] + 0.002;
 
-			iTD[i] = curretnTD(v[i]);
+			iTD[i] = currentTD(v[i]);
 		}
 
 		// Create live plot
@@ -75,7 +76,7 @@ public class IVTheoretical
 		outputFile.close();
 	} // main
 
-	public static double curretnTD (double v)
+	public static double currentTD (double v)
 	{
 		double currentTotal = v * iP * Math.pow(Math.E, (1-v/vP))/vP + iV * Math.pow(Math.E, (ecp*(v-vV))) + scd*Math.pow(Math.E, (v*q/k/t)-1);
 
