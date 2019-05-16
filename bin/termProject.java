@@ -14,20 +14,20 @@ public class termProject
 	public static double r1 = 24;		// Ohms
 	public static double l = 0.7;		// Henry
 	public static double dt = 5e-6;		// Time step
-	public static double tTotal = 3.3;	// Total time
+	public static double tTotal = 3.2;	// Total time
 	// Max index
 	public static int iMax = (int)(tTotal/dt);
 
 	public static void main(String[] args)
 	{
 
+		int maxIndex = iMax * 5;
 		// Arrays
-		double[] t = new double[iMax];
-		double[] i1 = new double[iMax];
-		double[] i2 = new double[iMax];
-		double[] itot = new double[iMax];
-		double[] vTD = new double[iMax];
-		int tempn = 1;
+		double[] t = new double[maxIndex];
+		double[] i1 = new double[maxIndex];
+		double[] i2 = new double[maxIndex];
+		double[] itot = new double[maxIndex];
+		double[] vTD = new double[maxIndex];
 		
 		// Initialize
 		t[0] = 0;
@@ -35,49 +35,49 @@ public class termProject
 		i1[0] = 0;
 		i2[0] = 0;
 
-		for(int i=1;i<iMax;i++)
+		for(int j=0;j<3;j++)
 		{
-			boolean check = false;
-			double tempi2 = 0;
-			double tempi1 = 0;
-			double tempvTD = 0;
-			t[i] = t[i-1] + dt;
-
-			while(!(check))
+			for(int i=(j*iMax)+1;i<((j+1)*iMax);i++)
 			{
-				tempi2 = 0;
-				tempvTD = 0;
-
-				vTD[i] = 0.10;
-				i1[i] = current1(vTD[i], i1[i-1]);
-				i2[i] = current2(vTD[i], i2[i-1], i1[i], i1[i-1]);
-				itot[i] = i1[i] + i2[i];
+				boolean check = false;
+				double tempi2 = 0;
+				double tempi1 = 0;
+				double tempvTD = 0;
+				t[i] = t[i-1] + dt;
 
 				while(!(check))
 				{
-					tempvTD += 0.001;
-					tempi2 = currentTD(tempvTD);
+					tempi2 = 0;
+					tempvTD = 0;
 
-					//System.out.println(i2[i] + "      " + tempi2);
+					vTD[i] = 0.10;
+					i1[i] = current1(vTD[i], i1[i-1]);
+					i2[i] = current2(vTD[i], i2[i-1], i1[i], i1[i-1]);
+					itot[i] = i1[i] + i2[i];
 
-					if(Math.abs(tempi2-i2[i]) < 0.1)
+					while(!(check))
 					{
+						tempvTD += 0.001;
+						tempi2 = currentTD(tempvTD);
+
+						if(Math.abs(tempi2-i2[i]) < 0.1)
+						{
+							check = true;
+						}
+					}
+					check = false;
+
+					double checki1 = current1(tempvTD, i1[i-1]);
+					double checki2 = current2(tempvTD, i2[i-1], checki1, i1[i-1]);
+					double checkitot = checki1 + checki2;
+
+					if(Math.abs(checkitot - itot[i]) < 0.000001)
+					{
+						vTD[i] = tempvTD;
 						check = true;
 					}
 				}
-				check = false;
-
-				double checki1 = current1(tempvTD, i1[i-1]);
-				double checki2 = current2(tempvTD, i2[i-1], checki1, i1[i-1]);
-				double checkitot = checki1 + checki2;
-
-				if(Math.abs(checkitot - itot[i]) < 0.000001)
-				{
-					vTD[i] = tempvTD;
-					check = true;
-				}
 			}
-			System.out.println(i);
 		}
 		
 		store(vTD, t);
