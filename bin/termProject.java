@@ -43,7 +43,7 @@ public class termProject
 				boolean check = false;
 				double tempi2 = 0;
 				double tempi1 = 0;
-				double tempvTD = 0.1;
+				double tempvTD = 0.0000001;
 				t[i] = t[i-1] + dt;
 
 				while(!(check))
@@ -100,7 +100,7 @@ public class termProject
 
 	public static double current2 (double v, double previouscurrent, double currentone, double previouscurrentone) // Derived with Kirchoff's voltage law
 	{
-		double current = previouscurrent + (r2*(currentone-previouscurrentone)/l) - v*dt;
+		double current = previouscurrent + (r2*(currentone-previouscurrentone)/l) - v*dt/l;
 		return current;
 	}//current2
 
