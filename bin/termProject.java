@@ -21,8 +21,7 @@ public class termProject
 	public static void main(String[] args)
 	{
 
-		// Max index for all 3 loops
-		int loops;
+		// Max index for one period of oscillation
 		int maxIndex = iMax + 1;
 		// Arrays
 		double[] t = new double[maxIndex];
