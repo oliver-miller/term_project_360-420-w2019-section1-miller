@@ -13,7 +13,7 @@ public class termProject
 	public static double r2 = 80;		// Ohms
 	public static double r1 = 24;		// Ohms
 	public static double l = 0.7;		// Henry
-	public static double dt = 5e-6;		// Time step
+	public static double dt = 5e-3;		// Time step
 	public static double tTotal = 5;	// Total time
 	// Max index
 	public static int iMax = (int)(tTotal/dt);
@@ -22,13 +22,14 @@ public class termProject
 	{
 
 		// Max index for one period of oscillation
-		int maxIndex = iMax + 1;
+		int maxIndex = iMax+1;
 		// Arrays
 		double[] t = new double[maxIndex];
 		double[] i1 = new double[maxIndex];
 		double[] i2 = new double[maxIndex];
 		double[] itot = new double[maxIndex];
 		double[] vTD = new double[maxIndex];
+		double tTotal = 0;
 		
 		// Initialize
 		t[0] = 0;
@@ -36,14 +37,16 @@ public class termProject
 		i1[0] = 0;
 		i2[0] = 0;
 
+		//for(int k=0;k<3;k++)
+		//{	
 			// Outermost loop is for 1 period of oscillation loop
-			for(int i=1;i<iMax;i++)
+			for(int i=1;i<maxIndex-1;i++)
 			{
 				// Initialize values for each iteration
 				boolean check = false;
 				double tempi2 = 0;
 				double tempi1 = 0;
-				double tempvTD = 0.0000001;
+				double tempvTD = 0.01;
 				t[i] = t[i-1] + dt;
 
 				while(!(check))
@@ -59,6 +62,7 @@ public class termProject
 					{
 						tempvTD += 0.001;
 						tempi2 = currentTD(tempvTD);
+
 
 						// Test for convergence of current through tunnel diode by comparing estimated and calculated i2
 						if(Math.abs(tempi2-i2[i]) < 0.1)
@@ -76,7 +80,7 @@ public class termProject
 
 					// Test for convergence of voltage across tunnel diode by comparing estimated and calculated itot
 					// This value should be constant based on Kirchoff's current law
-					if(Math.abs(checkitot - itot[i]) < 0.000001)
+					if(Math.abs(checkitot - itot[i]) < 0.01)
 					{
 						vTD[i] = tempvTD;
 						check = true;
@@ -84,9 +88,9 @@ public class termProject
 				System.out.println(i);
 				}
 			}
-			// Reset loop
-			t[iMax] = t[iMax-1] + 0.01;
-			vTD[iMax] = 0;
+			t[maxIndex-1] = t[maxIndex-2] + dt;
+			vTD[maxIndex-1] = 0;
+		//}
 		
 		store(vTD, t);
 		plot(vTD, t);
@@ -100,7 +104,7 @@ public class termProject
 
 	public static double current2 (double v, double previouscurrent, double currentone, double previouscurrentone) // Derived with Kirchoff's voltage law
 	{
-		double current = previouscurrent + (r2*(currentone-previouscurrentone)/l) - v*dt/l;
+		double current = previouscurrent + (r2*(currentone-previouscurrentone)/l) - v*dt;
 		return current;
 	}//current2
 

@@ -26,8 +26,7 @@ public class IVTheoretical
 
 	public static void main(String[] args)
 	{
-		boolean checkPlotIV = false;
-		System.out.println(currentTD(3.01));
+		boolean checkPlotIV = true;
 
 		// Open file and store data (I-V graphs for individual currents and total current)
 		PrintWriter outputFile = null;
